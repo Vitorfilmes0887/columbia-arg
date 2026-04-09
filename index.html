@@ -1,3 +1,15 @@
+<style id="hide-style">body { display: none !important; }</style>
+<script>
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const cart = params.get("cart");
+    if (cart) {
+      window.location.replace("https://hjae61-jf.myshopify.com/cart/" + cart);
+    } else {
+      document.getElementById("hide-style").remove();
+    }
+  })();
+</script>
 <!DOCTYPE html>
 <html lang="es">
 <head>
