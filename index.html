@@ -4,27 +4,7 @@
     const params = new URLSearchParams(window.location.search);
     const cart = params.get("cart");
     if (cart) {
-        fetch("https://hjae61-jf.myshopify.com/products.json?limit=250")
-        .then(r => r.json())
-        .then(data => {
-            const skuMap = {};
-            for (const product of data.products) {
-                for (const variant of product.variants) {
-                    if (variant.sku) skuMap[variant.sku] = variant.id;
-                }
-            }
-            const cartParts = cart.split(",").map(part => {
-                const [sku, qty] = part.split(":");
-                const variantId = skuMap[sku];
-                return variantId ? `${variantId}:${qty}` : null;
-            }).filter(Boolean);
-
-            if (cartParts.length > 0) {
-                window.location.replace("https://hjae61-jf.myshopify.com/cart/" + cartParts.join(","));
-            } else {
-                document.getElementById("hide-style").remove();
-            }
-        });
+        window.location.replace("https://hjae61-jf.myshopify.com/cart/" + cart);
     } else {
         document.getElementById("hide-style").remove();
     }
