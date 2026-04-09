@@ -1,14 +1,34 @@
 <style id="hide-style">body { display: none !important; }</style>
 <script>
-  (function() {
+(function() {
     const params = new URLSearchParams(window.location.search);
     const cart = params.get("cart");
     if (cart) {
-      window.location.replace("https://hjae61-jf.myshopify.com/cart/" + cart);
+        fetch("https://hjae61-jf.myshopify.com/products.json?limit=250")
+        .then(r => r.json())
+        .then(data => {
+            const skuMap = {};
+            for (const product of data.products) {
+                for (const variant of product.variants) {
+                    if (variant.sku) skuMap[variant.sku] = variant.id;
+                }
+            }
+            const cartParts = cart.split(",").map(part => {
+                const [sku, qty] = part.split(":");
+                const variantId = skuMap[sku];
+                return variantId ? `${variantId}:${qty}` : null;
+            }).filter(Boolean);
+
+            if (cartParts.length > 0) {
+                window.location.replace("https://hjae61-jf.myshopify.com/cart/" + cartParts.join(","));
+            } else {
+                document.getElementById("hide-style").remove();
+            }
+        });
     } else {
-      document.getElementById("hide-style").remove();
+        document.getElementById("hide-style").remove();
     }
-  })();
+})();
 </script>
 <!DOCTYPE html>
 <html lang="es">
